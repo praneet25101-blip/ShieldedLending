@@ -1,0 +1,84 @@
+import CompactStandardLibrary;
+
+enum LoanStatus {
+    Open,
+    Funded,
+    Repaid,
+    Defaulted
+}
+
+ledger totalLoans: Uint<64>;
+ledger totalVolume: Uint<64>;
+ledger platformFee: Uint<16>;
+
+constructor(fee: Uint<16>) {
+    totalLoans = 0;
+    totalVolume = 0;
+    platformFee = fee;
+}
+
+witness localSecretKey(): Bytes<32>;
+witness currentTimestamp(): Uint<64>;
+witness randomSalt(): Bytes<32>;
+
+circuit getUserId(): Bytes<32> {
+    const sk = localSecretKey();
+    return persistentHash([sk]);
+}
+
+circuit getBorrowerCommitment(): Bytes<32> {
+    const userId = getUserId();
+    const salt = randomSalt();
+    return persistentHash([userId, salt]);
+}
+
+export circuit createLoanRequest(
+    amount: Uint<64>,
+    interestRate: Uint<16>,
+    durationDays: Uint<32>,
+    collateralAmount: Uint<64>
+): [] {
+    assert(amount > 0, "Amount must be positive");
+    assert(interestRate <= 5000, "Interest rate too high");
+    assert(durationDays >= 1, "Duration too short");
+    assert(durationDays <= 365, "Duration too long");
+
+    assert(collateralAmount * 100 >= amount * 80, "Insufficient collateral");
+
+    totalLoans = totalLoans + 1;
+    totalVolume = totalVolume + amount;
+
+    []
+}
+
+export circuit fundLoanRequest(loanId: Bytes<32>, fundAmount: Uint<64>): [] {
+    assert(fundAmount > 0, "Invalid fund amount");
+
+    totalVolume = totalVolume + fundAmount;
+
+    []
+}
+
+export circuit repayLoan(loanId: Bytes<32>, repayAmount: Uint<64>): [] {
+    assert(repayAmount > 0, "Invalid repay amount");
+
+    totalVolume = totalVolume + repayAmount;
+
+    []
+}
+
+export circuit claimDefault(loanId: Bytes<32>): [] {
+    []
+}
+
+export circuit getTotalLoans(): Uint<64> {
+    return totalLoans;
+}
+
+export circuit getTotalVolume(): Uint<64> {
+    return totalVolume;
+}
+
+export circuit getPlatformFee(): Uint<16> {
+    return platformFee;
+}
