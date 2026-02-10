@@ -1,0 +1,24 @@
+{
+  "name": "@p2p-lending-midnight/contract",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "compact": "compact compile src/lending.compact src/managed/lending",
+    "build": "rm -rf dist && mkdir -p dist && cp ./src/lending.compact ./dist/",
+    "deploy": "tsx deploy-sample.ts",
+    "typecheck": "echo \"No TypeScript files to typecheck in contract\""
+  },
+  "dependencies": {
+    "@midnight-ntwrk/compact-js": "^2.4.0",
+    "@midnight-ntwrk/compact-runtime": "0.14.0",
+    "@midnight-ntwrk/ledger-v7": "^7.0.1",
+    "@midnight-ntwrk/midnight-js-contracts": "^3.0.0",
+    "@midnight-ntwrk/wallet": "^5.0.0",
+    "@midnight-ntwrk/wallet-sdk-address-format": "^3.0.0",
+    "bip39": "^3.1.0"
+  },
+  "devDependencies": {
+    "tsx": "^4.21.0"
+  }
+}
