@@ -1,0 +1,8 @@
+{
+  "version": 3,
+  "file": "index.js",
+  "sourceRoot": "../../../../",
+  "sources": ["src/lending.compact", "compiler/standard-library.compact"],
+  "names": [],
+  "mappings": ";;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;EAAA;;;;;;;;;;MAwBA,AAAA,eAEC;;;;;cAF8B,YAAqB;cAAE,gBAAyB;;;;;;;;;;;;;;;;;;;;;;;;;yCAAhD,YAAqB,+BAAE,gBAAyB;;;;;;;;;iDAAhD,YAAqB;iDAAE,gBAAyB;;;OAE9E;MAQD,AAAA,mBAKC;;;;;cALkC,YAAqB;cAAE,QAAgB;cAAE,gBAAyB;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;yCAAlE,YAAqB,+BAAE,QAAgB,+BAAE,gBAAyB;;;;;;;;;qDAAlE,YAAqB;qDAAE,QAAgB;qDAAE,gBAAyB;;;OAKpG;MAaD,AAAA,sBAQC;;;;;cARqC,QAAiB;cAAE,WAAmB;cAAE,gBAAyB;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;yCAAjE,QAAiB,+BAAE,WAAmB,+BAAE,gBAAyB;;;;;;;;;wDAAjE,QAAiB;wDAAE,WAAmB;wDAAE,gBAAyB;;;OAQtG;;;;;;;GACA;EA7DD;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;IASA;;;;;;;;;yEAA6C;IAO7C;;;;;;;;;yEAAiD;IACjD;;;;;;;;;yEAA4C;;;;;;;GA4C3C;ECbD,AAAA,kBAAiC;oEAAA;;;EDxBjC,AAAA,kBAEC,4BAF8B,YAAqB,EAAE,gBAAyB;;IAC3E;;;;;;;2HAA+B,YAAU;;yEAAtB;;GACtB;EAQD,AAAA,sBAKC;;yBALkC,YAAqB;yBAAE,QAAgB;yBAAE,gBAAyB;;IAGjG;;;;;;;2HAAmC,YAAU;;yEAAtB;IACvB;;;;;;;2HAA+B,QAAM;;yEAAlB;;GACtB;EAaD,AAAA,yBAQC;;4BARqC,QAAiB;4BAAE,WAAmB;4BAAE,gBAAyB;;kEAE5F;;;;;;;;;;;uIAAmB;iEAA8B,QAAM;;;GAMjE;;;;;;;;;;;;;;;;;;;;IAnDD;qCAAA;;;;;;;;;;;0GAA6C;KAAA;IAO7C;qCAAA;;;;;;;;;;;0GAAiD;KAAA;IACjD;qCAAA;;;;;;;;;;;0GAA4C;KAAA;;;;;;;;;;"
+}

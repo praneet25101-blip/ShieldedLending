@@ -1,0 +1,58 @@
+// Browser-safe Midnight API wrapper for the lending contract
+export class MidnightDAppAPI {
+  private lendingCompiledContract: any;
+  private providers: any;
+  private _modules: any;
+
+  constructor() { }
+
+  // Delay importing heavy midnight packages until explicitly initialized in the browser.
+  async initialize(walletAPI: any) {
+    const config = await walletAPI.getConfiguration();
+
+    // Dynamically import Midnight modules to avoid module-evaluation errors during app startup
+    const [compactMod, contractsMod, indexerMod, levelMod] = await Promise.all([
+      import('@midnight-ntwrk/compact-js'),
+      import('@midnight-ntwrk/midnight-js-contracts'),
+      import('@midnight-ntwrk/midnight-js-indexer-public-data-provider'),
+      import('@midnight-ntwrk/midnight-js-level-private-state-provider')
+    ]);
+
+    this._modules = {
+      CompiledContract: compactMod.CompiledContract,
+      deployContract: contractsMod.deployContract,
+      findDeployedContract: contractsMod.findDeployedContract,
+      indexerPublicDataProvider: indexerMod.indexerPublicDataProvider,
+      levelPrivateStateProvider: levelMod.levelPrivateStateProvider
+    };
+
+    const fetchResource = async (path: string) => {
+      const resp = await fetch(path);
+      if (!resp.ok) throw new Error(`Failed to fetch ZK resource: ${path}`);
+      const ab = await resp.arrayBuffer();
+      return new Uint8Array(ab);
+    };
+
+    const keyMaterialProvider = {
+      getZKIR: async (c: string) => fetchResource(`/zkir/${c}.zkir`),
+      getProverKey: async (c: string) => fetchResource(`/keys/${c}.prover`),
+      getVerifierKey: async (c: string) => fetchResource(`/keys/${c}.verifier`),
+    };
+
+    this.providers = {
+      privateStateProvider: this._modules.levelPrivateStateProvider({}),
+      publicDataProvider: this._modules.indexerPublicDataProvider(config.indexerUri, config.indexerWsUri),
+      zkConfigProvider: keyMaterialProvider,
+      proofProvider: await walletAPI.getProvingProvider(keyMaterialProvider),
+      walletProvider: {
+        getCoinPublicKey: async () => (await walletAPI.getShieldedAddresses()).shieldedCoinPublicKey,
+        getEncryptionPublicKey: async () => (await walletAPI.getShieldedAddresses()).shieldedEncryptionPublicKey,
+      },
+      midnightProvider: {
+        submitTx: async (tx: any) => walletAPI.submitTransaction(tx),
+        balanceTx: async (tx: any) => walletAPI.balanceUnsealedTransaction(tx),
+      }
+    };
+
+    this.lendingCompiledContract = this._modules.CompiledContract.make('lending', null as any);
+  }

@@ -1,0 +1,105 @@
+pragma language_version >= 0.20;
+
+import CompactStandardLibrary;
+
+/**
+ * Simplified private commitment for a borrower's credit profile.
+ * In production this would be a commitment over a structured secret
+ * that includes the credit score and other attributes.
+ */
+export ledger borrower_commitment: Bytes<32>;
+
+/**
+ * A simple ledger entry that represents a loan request anchor.
+ * For clarity this example keeps a single `loan_commitment` slot —
+ * a production contract would use maps/arrays and proper identifiers.
+ */
+export ledger loan_request_commitment: Bytes<32>;
+export ledger loan_request_amount: Uint<64>;
+
+/**
+ * Track disbursed loans to prevent double-disbursement.
+ */
+export ledger loan_disbursed: Bool;
+export ledger loan_disburse_recipient: Bytes<32>;
+export ledger loan_disburse_amount: Uint<64>;
+
+/**
+ * Register a borrower's hidden credit profile commitment on-chain.
+ * `commitment` should be a persistent hash of a secret containing the
+ * borrower's credit score and any other confidential attributes.
+ */
+export circuit register_credit(commitment: Bytes<32>, wallet_address: Bytes<32>): [] {
+    borrower_commitment = disclose(commitment);
+}
+
+/**
+ * Create a loan request referencing the borrower's commitment without
+ * revealing the underlying credit history. The prover (borrower)
+ * demonstrates knowledge of the secret that matches the stored commitment
+ * off-chain to potential lenders via a separate ZK proof flow.
+ */
+export circuit create_loan_request(commitment: Bytes<32>, amount: Uint<64>, wallet_address: Bytes<32>): [] {
+    // For this simplified example we just store the commitment & amount
+    // as the active loan request anchor.
+    loan_request_commitment = disclose(commitment);
+    loan_request_amount = disclose(amount);
+}
+
+/**
+ * Verifier circuit that allows a lender to verify that a borrower's hidden
+ * credit score (embedded in the secret) meets a minimum threshold without
+ * revealing the score itself. The prover provides `secret` and the circuit
+ * checks it hashes to the registered commitment and that the embedded
+ * score satisfies the `min_score` predicate.
+ *
+ * NOTE: This is a conceptual example. The compact language here assumes the
+ * prover proves the predicate inside the circuit; how `secret` encodes the
+ * score is an implementation detail of the off-chain prover.
+ */
+export circuit prove_credit_threshold(secret: Bytes<32>, min_score: Uint<16>, wallet_address: Bytes<32>): [] {
+    // Verify secret corresponds to previously registered commitment
+    assert(borrower_commitment == persistentHash<Bytes<32>>(secret), "Commitment mismatch");
+
+    // In a real setup, the circuit would parse `secret` and extract the
+    // numeric score, then assert(score >= min_score). Here we symbolically
+    // demonstrate that this check happens inside a ZK circuit.
+    // Example (pseudo): assert(extract_score(secret) >= min_score, "Score too low");
+}
+
+/**
+ * Approve and disburse a loan to the borrower's wallet.
+ * This circuit verifies the loan was requested, performs a ZK proof of sufficient credit,
+ * and then transfers the loan amount to the borrower.
+ *
+ * In production, this would integrate with Midnight's token/asset transfer mechanisms.
+ */
+export circuit approve_and_disburse_loan(
+    secret: Bytes<32>,
+    min_score: Uint<16>,
+    recipient_wallet: Bytes<32>,
+    amount: Uint<64>
+): [] {
+    // Verify the borrower's credit commitment exists
+    assert(borrower_commitment == persistentHash<Bytes<32>>(secret), "Commitment mismatch");
+
+    // Verify credit threshold is met (ZK proof)
+    // In real implementation, extract_score(secret) >= min_score
+    
+    // Verify the loan request amount matches
+    assert(loan_request_amount == amount, "Amount mismatch");
+
+    // Prevent double-disbursement
+    assert(loan_disbursed == false, "Loan already disbursed");
+
+    // Mark as disbursed and record recipient & amount
+    loan_disbursed = disclose(true);
+    loan_disburse_recipient = disclose(recipient_wallet);
+    loan_disburse_amount = disclose(amount);
+    
+    // NOTE: In production Midnight implementation, this circuit would also:
+    // 1. Deduct amount from the contract's token pool
+    // 2. Credit the amount to the recipient's private state
+    // 3. Emit an event/commitment that the wallet can use to prove receipt
+}
+
