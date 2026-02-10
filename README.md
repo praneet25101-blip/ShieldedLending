@@ -1,6 +1,6 @@
-# P2P Lending (Midnight) — scaffold
+# ShieldedLending
 
-This scaffold provides a minimal Midnight-style compact contract and a simple React frontend that demonstrates Lace wallet connectivity and local simulation flows.
+This website provides a minimal Midnight-style compact contract and a simple React frontend that demonstrates Lace wallet connectivity and local simulation flows.
 
 Bash quick commands (copy-paste)
 
@@ -98,3 +98,4 @@ If you are new to Midnight, please read these files in order:
 https://github.com/user-attachments/assets/fa1b7d93-f16d-443a-a834-b79117b9ff51
 
 "2879" height="1473" alt="Screenshot 2026-02-10 220912" src="https://github.com/user-attachments/assets/7d523541-a95a-4482-be14-23fbe2c5b950" />
+
