@@ -68,6 +68,8 @@ npx ts-node deploy-sample.ts
 pnpm add -D ts-node typescript @types/node
 npx ts-node deploy-sample.ts
 ```
+#Contract Address
+856f2e0054f904bb3fe025c26c9f9cb35a149c27c5c1beeb1a2324631fdd375f
 
 Notes
 
@@ -98,4 +100,5 @@ If you are new to Midnight, please read these files in order:
 https://github.com/user-attachments/assets/fa1b7d93-f16d-443a-a834-b79117b9ff51
 
 "2879" height="1473" alt="Screenshot 2026-02-10 220912" src="https://github.com/user-attachments/assets/7d523541-a95a-4482-be14-23fbe2c5b950" />
+
 
